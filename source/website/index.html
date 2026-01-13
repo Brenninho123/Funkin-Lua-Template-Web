@@ -1,35 +1,53 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FNF Script Generator (Lua + Haxe)</title><style>
+<title>FNF Script Generator Ultimate</title>
+
+<style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#fff;min-height:100vh}
 header{padding:20px;background:rgba(0,0,0,.5);text-align:center}
 header h1{color:#00eaff;font-size:2.2rem}
-main{max-width:1200px;margin:auto;padding:25px}
+header p{opacity:.9}
+main{max-width:1300px;margin:auto;padding:25px}
 section{background:rgba(255,255,255,.08);padding:20px;border-radius:14px;margin-bottom:25px}
 h2{color:#00eaff;margin-bottom:10px}
 label{display:block;margin-top:10px}
 select,input,textarea{width:100%;margin-top:5px;padding:10px;border-radius:8px;border:none;font-family:monospace}
-textarea{min-height:320px}
+textarea{min-height:340px}
 button{background:#00eaff;color:#000;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:bold;margin-top:10px}
 button:hover{background:#00b7c2}
 .buttons{display:flex;flex-wrap:wrap;gap:10px}
 footer{text-align:center;padding:15px;background:rgba(0,0,0,.6);font-size:.9rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
-</style></head>
-<body><header>
-  <h1>FNF Script Generator</h1>
-  <p>Psych Engine • Lua & Haxe • HTML puro</p>
-</header><main><section>
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>FNF Script Generator Ultimate</h1>
+  <p>Lua • Haxe • HXC • Psych Engine • V-Slice • Tudo em HTML puro</p>
+</header>
+
+<main>
+
+<section>
 <h2>Configuração</h2>
+
 <label>Linguagem</label>
 <select id="lang">
   <option value="lua">Lua (Psych Engine)</option>
   <option value="haxe">Haxe (.hx)</option>
-</select><label>Tipo de Script</label> <select id="tipo">
+  <option value="hxc">HXC (V-Slice / FunkinCrew)</option>
+  <option value="convert_lua_haxe">Converter Lua → Haxe</option>
+  <option value="convert_lua_hxc">Converter Lua → HXC</option>
+</select>
 
+<label>Tipo de Script</label>
+<select id="tipo">
   <option value="empty">Script vazio</option>
   <option value="modchart">Modchart</option>
   <option value="hud">HUD</option>
@@ -37,91 +55,168 @@ footer{text-align:center;padding:15px;background:rgba(0,0,0,.6);font-size:.9rem}
   <option value="camera">Camera Follow</option>
   <option value="notesplash">Note Splash</option>
   <option value="customnote">Custom Note</option>
-  <option value="stage">Stage</option>
   <option value="cutscene">Cutscene</option>
   <option value="dialogue">Dialogue</option>
   <option value="health">Sistema de Vida</option>
   <option value="cameraeffects">Efeitos de Câmera</option>
-</select><label>Velocidade / Intensidade</label> <input id="vel" value="0.5">
+
+  <option value="hxc_song">HXC Song</option>
+  <option value="hxc_event">HXC Event</option>
+  <option value="hxc_module">HXC Module</option>
+</select>
+
+<label>Velocidade / Intensidade</label>
+<input id="vel" value="0.5">
 
 <div class="buttons">
   <button id="btnGerar">Gerar</button>
   <button id="btnLimpar">Limpar</button>
 </div>
-</section><section>
+</section>
+
+<section>
 <h2>Editor / Saída</h2>
-<textarea id="saida"></textarea>
+<textarea id="saida" placeholder="Código gerado aparece aqui..."></textarea>
 <div class="buttons">
   <button id="btnCopiar">Copiar</button>
   <button id="btnBaixar">Baixar</button>
 </div>
-</section><section>
+</section>
+
+<section>
 <h2>Stage JSON (Psych Engine)</h2>
-<label>Imagem</label><input id="stageImg" value="stage/bg">
-<label>X</label><input id="stageX" value="-600">
-<label>Y</label><input id="stageY" value="-200">
-<label>Zoom</label><input id="stageZoom" value="0.9">
+<div class="grid">
+  <div><label>Imagem</label><input id="stageImg" value="stage/bg"></div>
+  <div><label>X</label><input id="stageX" value="-600"></div>
+  <div><label>Y</label><input id="stageY" value="-200"></div>
+  <div><label>Zoom</label><input id="stageZoom" value="0.9"></div>
+</div>
 <button id="btnStage">Gerar Stage JSON</button>
-</section></main><footer>© 2026 • FNF Script Generator</footer><script>
-// ====== EVENTOS (BUG CORRIGIDO) ======
-document.getElementById('btnGerar').addEventListener('click', gerar);
-document.getElementById('btnLimpar').addEventListener('click', ()=>saida.value='');
-document.getElementById('btnCopiar').addEventListener('click', ()=>{saida.select();document.execCommand('copy')});
-document.getElementById('btnBaixar').addEventListener('click', baixar);
-document.getElementById('btnStage').addEventListener('click', gerarStageJSON);
+</section>
+
+</main>
+
+<footer>© 2026 • FNF Script Generator Ultimate</footer>
+
+<script>
+const langEl = document.getElementById('lang');
+const tipoEl = document.getElementById('tipo');
+const velEl  = document.getElementById('vel');
+const saida  = document.getElementById('saida');
+
+document.getElementById('btnGerar').onclick = gerar;
+document.getElementById('btnLimpar').onclick = ()=>saida.value='';
+document.getElementById('btnCopiar').onclick = ()=>{saida.select();document.execCommand('copy')};
+document.getElementById('btnBaixar').onclick = baixar;
+document.getElementById('btnStage').onclick = gerarStageJSON;
 
 function gerar(){
-  const tipo=document.getElementById('tipo').value;
-  const vel=document.getElementById('vel').value;
-  const lang=document.getElementById('lang').value;
-  let out="";
+  const lang = langEl.value;
+  const tipo = tipoEl.value;
+  const vel  = velEl.value;
+  let out = "";
 
+  /* ================= LUA ================= */
   if(lang==='lua'){
-    out += "-- Lua Script (Psych Engine)\n\n";
+    out="-- Lua Script (Psych Engine)\n\n";
     if(tipo==='empty') out+="function onCreate() end\nfunction onUpdate(elapsed) end";
-    if(tipo==='modchart') out+=`function onBeatHit() if curBeat%4==0 then doTweenZoom('z','camGame',getProperty('camGame.zoom')+0.1,${vel},'quadOut') end end`;
+    if(tipo==='modchart') out+=`function onBeatHit()\n if curBeat%4==0 then cameraShake('camGame',0.02,${vel}) end\nend`;
     if(tipo==='hud') out+="function onCreatePost() setTextSize('scoreTxt',22) end";
     if(tipo==='event') out+="function onEvent(n) if n=='Flash' then cameraFlash('camGame','FFFFFF',0.5) end end";
     if(tipo==='camera') out+="function onUpdate() triggerEvent('Camera Follow Pos','600','450') end";
-    if(tipo==='notesplash') out+="function goodNoteHit(i,d,t,s) spawnNoteSplashOnNote(i) end";
-    if(tipo==='customnote') out+="function goodNoteHit(i,d,t,s) setProperty('health',getProperty('health')-0.2) end";
+    if(tipo==='notesplash') out+="function goodNoteHit(i) spawnNoteSplashOnNote(i) end";
+    if(tipo==='customnote') out+="function goodNoteHit() setProperty('health',getProperty('health')-0.1) end";
     if(tipo==='health') out+="function opponentNoteHit() setProperty('health',getProperty('health')-0.02) end";
-    if(tipo==='cameraeffects') out+="function onBeatHit() cameraShake('camGame',0.02,0.1) end";
+    if(tipo==='cameraeffects') out+="function onBeatHit() cameraShake('camGame',0.03,0.1) end";
   }
 
+  /* ================= HAXE ================= */
   if(lang==='haxe'){
-    out += "// Haxe Script (.hx)\\nimport flixel.FlxG;\\nimport flixel.tweens.FlxTween;\\n\\nclass Script {\\n";
-    if(tipo==='empty') out+="  public function new() {}\n";
-    if(tipo==='modchart') out+="  public function onBeatHit(curBeat:Int){ if(curBeat%4==0) FlxG.camera.zoom+=0.1; }\n";
-    if(tipo==='hud') out+="  public function onCreatePost(){ PlayState.instance.scoreTxt.size = 22; }\n";
-    if(tipo==='camera') out+="  public function onUpdate(elapsed:Float){ FlxG.camera.follow(null); }\n";
-    if(tipo==='health') out+="  public function opponentNoteHit(){ PlayState.instance.health -= 0.02; }\n";
-    out += "}";
+    out=`// Haxe Script (.hx)
+import flixel.FlxG;
+import flixel.tweens.FlxTween;
+
+class Script {
+  public function new(){}
+  public function onBeatHit(curBeat:Int){
+    if(curBeat % 4 == 0)
+      FlxG.camera.zoom += 0.1;
+  }
+}`;
   }
 
-  document.getElementById('saida').value = out;
+  /* ================= HXC ================= */
+  if(lang==='hxc'){
+    out="// HXC Script (V-Slice)\n\n";
+    if(tipo==='hxc_song'){
+      out+=`class MySong extends Song {
+  public function new(){ super('songName'); }
+  override function onBeatHit(){ trace('Beat'); }
+}`;
+    }
+    if(tipo==='hxc_event'){
+      out+=`class MyEvent extends Event {
+  override function trigger(v1:String,v2:String){
+    trace('Event triggered');
+  }
+}`;
+    }
+    if(tipo==='hxc_module'){
+      out+=`class MyModule extends Module {
+  override function onCreate(){
+    trace('Module loaded');
+  }
+}`;
+    }
+  }
+
+  /* ========== CONVERSÕES ========== */
+  if(lang==='convert_lua_haxe'){
+    out=`// Conversão Lua → Haxe
+// (básica / manual)
+
+public function onBeatHit(curBeat:Int){
+  if(curBeat % 4 == 0)
+    FlxG.camera.zoom += 0.1;
+}`;
+  }
+
+  if(lang==='convert_lua_hxc'){
+    out=`// Conversão Lua → HXC
+override function onBeatHit(){
+  trace('Beat');
+}`;
+  }
+
+  saida.value = out;
 }
 
 function gerarStageJSON(){
-  const stage={
-    defaultZoom:parseFloat(stageZoom.value),
+  saida.value = JSON.stringify({
+    defaultZoom:+stageZoom.value,
     boyfriend:[770,450],
     girlfriend:[400,130],
     opponent:[100,450],
-    sprites:[{name:'bg',image:stageImg.value,x:+stageX.value,y:+stageY.value,scrollFactor:[1,1]}]
-  };
-  saida.value = JSON.stringify(stage,null,2);
+    sprites:[
+      {name:"bg",image:stageImg.value,x:+stageX.value,y:+stageY.value,scrollFactor:[1,1]}
+    ]
+  },null,2);
 }
 
 function baixar(){
-  const txt=saida.value;
-  const isJson=txt.trim().startsWith('{');
-  const isHaxe=txt.includes('class Script');
-  const blob=new Blob([txt],{type:'text/plain'});
+  let ext='txt';
+  const t=saida.value;
+  if(t.includes('Lua')) ext='lua';
+  if(t.includes('class Script')) ext='hx';
+  if(t.includes('extends Song')) ext='hxc';
+  if(t.trim().startsWith('{')) ext='json';
+
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=isJson?'stage.json':(isHaxe?'Script.hx':'script.lua');
+  a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));
+  a.download='fnf_script.'+ext;
   a.click();
 }
-</script></body>
+</script>
+
+</body>
 </html>
