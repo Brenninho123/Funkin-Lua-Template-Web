@@ -100,29 +100,31 @@ footer {
   <h1>FNF Psych Engine</h1>
   <p>Gerador de Scripts em Lua</p>
 </header><main><section>
-  <h2>Configurações do Script</h2><label>Tipo de Script</label> <select id="tipo"> <option value="modchart">Modchart</option> <option value="hud">HUD</option> <option value="event">Evento</option> <option value="camera">Camera Follow</option> <option value="notesplash">Note Splash</option> <option value="customnote">Custom Note</option> <option value="stage">Stage</option> <option value="ui">UI / Menu</option> <option value="gameover">Game Over</option> <option value="achievement">Achievement</option> <option value="shader">Shader (Lua)</option> <option value="empty">Script vazio</option> </select>
+  <h2>Gerador Universal de Scripts Lua (Psych Engine)</h2><label>Tipo de Script</label> <select id="tipo"> <option value="empty">Script vazio</option> <option value="modchart">Modchart</option> <option value="hud">HUD</option> <option value="event">Evento</option> <option value="camera">Camera Follow</option> <option value="notesplash">Note Splash</option> <option value="customnote">Custom Note</option> <option value="stage">Stage</option> <option value="ui">UI / Menu</option> <option value="gameover">Game Over</option> <option value="achievement">Achievement</option> <option value="shader">Shader (Lua)</option> </select>
 
-<label>Nome do Script</label> <input id="nome" placeholder="ex: cameraZoom.lua" />
+<label>Callback Lua (opcional)</label> <select id="callback"> <option value="">Nenhum</option> <option value="onCreate">onCreate</option> <option value="onCreatePost">onCreatePost</option> <option value="onUpdate">onUpdate</option> <option value="onBeatHit">onBeatHit</option> <option value="onStepHit">onStepHit</option> <option value="goodNoteHit">goodNoteHit</option> <option value="opponentNoteHit">opponentNoteHit</option> <option value="onEvent">onEvent</option> <option value="onGameOver">onGameOver</option> <option value="onEndSong">onEndSong</option> </select>
 
-<label>Velocidade do Tween</label> <input id="vel" value="0.5" />
+<label>Velocidade / Duração</label> <input id="vel" value="0.5" />
 
 <button onclick="gerar()">Gerar Script</button>
 
 </section><section>
   <h2>Script Lua (Psych Engine)</h2>
-  <textarea id="saida" readonly></textarea>
+  <textarea id="saida"></textarea>
   <button onclick="copiar()">Copiar</button>
 </section></main><footer>
   © 2026 - Funkin' Lua Generator
 </footer><script>
 function gerar() {
   const tipo = document.getElementById('tipo').value;
+  const cb = document.getElementById('callback').value;
   const vel = document.getElementById('vel').value;
-  let lua = '';
+
+  let lua = `-- GERADO PELO FUNKIN LUA GENERATOR
+`;
 
   if (tipo === 'empty') {
-    lua = `-- SCRIPT LUA VAZIO (Psych Engine)
-function onCreate()
+    lua += `function onCreate()
 end
 
 function onUpdate(elapsed)
@@ -133,25 +135,22 @@ end`;
   }
 
   if (tipo === 'modchart') {
-    lua = `-- MODCHART
-function onBeatHit()
+    lua += `function onBeatHit()
   if curBeat % 4 == 0 then
-    doTweenAngle('turn','camGame',2,${vel},'sineInOut')
+    doTweenZoom('zoom','camGame',getProperty('camGame.zoom')+0.1,${vel},'quadOut')
   end
 end`;
   }
 
   if (tipo === 'hud') {
-    lua = `-- HUD
-function onCreatePost()
-  setTextFont('scoreTxt','vcr.ttf')
-  setProperty('healthBar.alpha',0.7)
+    lua += `function onCreatePost()
+  setTextSize('scoreTxt',22)
+  setProperty('healthBar.alpha',0.8)
 end`;
   }
 
   if (tipo === 'event') {
-    lua = `-- EVENTO
-function onEvent(name,v1,v2)
+    lua += `function onEvent(name,v1,v2)
   if name == 'Flash' then
     cameraFlash('camGame','FFFFFF',tonumber(v1) or 0.5)
   end
@@ -159,8 +158,7 @@ end`;
   }
 
   if (tipo === 'camera') {
-    lua = `-- CAMERA FOLLOW
-function onUpdate()
+    lua += `function onUpdate()
   if mustHitSection then
     triggerEvent('Camera Follow Pos','600','450')
   else
@@ -170,8 +168,7 @@ end`;
   }
 
   if (tipo === 'notesplash') {
-    lua = `-- NOTE SPLASH
-function goodNoteHit(id,dir,noteType,isSustain)
+    lua += `function goodNoteHit(id,dir,noteType,isSustain)
   if not isSustain then
     spawnNoteSplashOnNote(id)
   end
@@ -179,8 +176,7 @@ end`;
   }
 
   if (tipo === 'customnote') {
-    lua = `-- CUSTOM NOTE
-function goodNoteHit(id,dir,noteType,isSustain)
+    lua += `function goodNoteHit(id,dir,noteType,isSustain)
   if noteType == 'Damage Note' then
     setProperty('health',getProperty('health')-0.3)
   end
@@ -188,40 +184,43 @@ end`;
   }
 
   if (tipo === 'stage') {
-    lua = `-- STAGE SCRIPT
-function onCreate()
+    lua += `function onCreate()
   makeLuaSprite('bg','stage/bg',-600,-200)
   addLuaSprite('bg',false)
 end`;
   }
 
   if (tipo === 'ui') {
-    lua = `-- UI / MENU
-function onCreatePost()
+    lua += `function onCreatePost()
   setPropertyFromClass('ClientPrefs','downScroll',true)
 end`;
   }
 
   if (tipo === 'gameover') {
-    lua = `-- GAME OVER
-function onGameOver()
+    lua += `function onGameOver()
   playSound('death',1)
   return Function_Continue
 end`;
   }
 
   if (tipo === 'achievement') {
-    lua = `-- ACHIEVEMENT
-function onEndSong()
+    lua += `function onEndSong()
   unlockAchievement('my_achievement')
   return Function_Continue
 end`;
   }
 
   if (tipo === 'shader') {
-    lua = `-- SHADER FAKE (LUA)
-function onUpdate(elapsed)
+    lua += `function onUpdate(elapsed)
   setProperty('camGame.alpha',0.95)
+end`;
+  }
+
+  if (cb !== '') {
+    lua += `
+
+-- CALLBACK EXTRA
+function ${cb}()
 end`;
   }
 
