@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Funkin' Lua Template</title>
+  <title>Funkin' Lua Script Generator</title>
   <style>
     * {
       margin: 0;
@@ -25,10 +25,6 @@ header h1 {
   font-size: 2.2rem;
 }
 
-nav {
-  margin-top: 10px;
-}
-
 nav a {
   color: #00eaff;
   text-decoration: none;
@@ -36,36 +32,47 @@ nav a {
   font-weight: bold;
 }
 
-nav a:hover {
-  text-decoration: underline;
-}
-
 main {
   padding: 40px 20px;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
 }
 
 section {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   background: rgba(255, 255, 255, 0.08);
   padding: 20px;
   border-radius: 12px;
 }
 
-section h2 {
-  margin-bottom: 10px;
+h2 {
   color: #00eaff;
+  margin-bottom: 10px;
 }
 
-footer {
-  text-align: center;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.5);
+label {
+  display: block;
+  margin-top: 10px;
   font-size: 0.9rem;
 }
 
+input, select, textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-family: monospace;
+}
+
+textarea {
+  min-height: 220px;
+  resize: vertical;
+}
+
 button {
+  margin-top: 15px;
   background: #00eaff;
   color: #000;
   border: none;
@@ -80,41 +87,114 @@ button:hover {
   background: #00b7c2;
 }
 
+footer {
+  text-align: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  font-size: 0.9rem;
+}
+
   </style>
 </head>
-<body>
-  <header>
-    <h1>Meu Site em HTML</h1>
-    <nav>
-      <a href="#inicio">Início</a>
-      <a href="#sobre">Sobre</a>
-      <a href="#contato">Contato</a>
-    </nav>
-  </header>  <main>
-    <section id="inicio">
-      <h2>Bem-vindo</h2>
-      <p>
-        Este é um site simples feito apenas com HTML e CSS.
-        Ele é leve, rápido e funciona em PC e celular.
-      </p>
-      <br />
-      <button onclick="alert('Botão funcionando!')">Clique aqui</button>
-    </section><section id="sobre">
-  <h2>Sobre</h2>
-  <p>
-    Você pode usar este modelo como base para projetos pessoais,
-    páginas de mods, jogos, portfólios ou qualquer outra ideia.
-  </p>
-</section>
+<body><header>
+  <h1>FNF Psych Engine</h1>
+  <p>Gerador de Scripts em Lua</p>
+</header><main><section>
+  <h2>Configurações do Script</h2><label>Tipo de Script</label> <select id="tipo"> <option value="modchart">Modchart</option> <option value="hud">HUD</option> <option value="event">Evento</option> </select>
 
-<section id="contato">
-  <h2>Contato</h2>
-  <p>Email: exemplo@email.com</p>
-  <p>Discord: SeuNick#0000</p>
-</section>
+<label>Nome do Script</label> <input id="nome" placeholder="ex: cameraZoom.lua" />
 
-  </main>  <footer>
-    © 2026 - Site feito em HTML puro
-  </footer>
-</body>
+<label>Velocidade do Tween</label> <input id="vel" value="0.5" />
+
+<button onclick="gerar()">Gerar Script</button>
+
+</section><section>
+  <h2>Script Lua (Psych Engine)</h2>
+  <textarea id="saida" readonly></textarea>
+  <button onclick="copiar()">Copiar</button>
+</section></main><footer>
+  © 2026 - Funkin' Lua Generator
+</footer><script>
+function gerar() {
+  const tipo = document.getElementById('tipo').value;
+  const vel = document.getElementById('vel').value;
+
+  let lua = '';
+
+  if (tipo === 'modchart') {
+    lua = `-- MODCHART (Psych Engine)
+function onBeatHit()
+  if curBeat % 4 == 0 then
+    doTweenZoom('zoom','camGame',getProperty('camGame.zoom')+0.1,${vel},'quadOut')
+  end
+end`;
+  }
+
+  if (tipo === 'hud') {
+    lua = `-- HUD CUSTOM
+function onCreatePost()
+  setTextSize('scoreTxt',22)
+  setProperty('healthBar.alpha',0.8)
+end`;
+  }
+
+  if (tipo === 'event') {
+    lua = `-- EVENTO CUSTOM
+function onEvent(name,v1,v2)
+  if name == 'Screen Shake' then
+    cameraShake('camGame',0.01,tonumber(v1) or 0.2)
+  end
+end`;
+  }
+
+  if (tipo === 'camera') {
+    lua = `-- CAMERA FOLLOW
+function onUpdate()
+  if mustHitSection then
+    triggerEvent('Camera Follow Pos','600','450')
+  else
+    triggerEvent('Camera Follow Pos','1000','450')
+  end
+end`;
+  }
+
+  if (tipo === 'notesplash') {
+    lua = `-- NOTE SPLASH CUSTOM
+function goodNoteHit(id,dir,noteType,isSustain)
+  if not isSustain then
+    spawnNoteSplashOnNote(id)
+  end
+end`;
+  }
+
+  if (tipo === 'customnote') {
+    lua = `-- CUSTOM NOTE
+function onCreate()
+  addLuaScript('custom_note')
+end
+
+function goodNoteHit(id,dir,noteType,isSustain)
+  if noteType == 'Poison Note' then
+    setProperty('health',getProperty('health')-0.2)
+  end
+end`;
+  }
+
+  if (tipo === 'shader') {
+    lua = `-- SHADER FAKE (LUA)
+function onCreatePost()
+  setProperty('camGame.alpha',0.95)
+end`;
+  }
+
+  document.getElementById('saida').value = lua;
+}
+
+function copiar() {
+  const t = document.getElementById('saida');
+  t.select();
+  document.execCommand('copy');
+  alert('Script copiado!');
+}
+</script></body>
 </html>
