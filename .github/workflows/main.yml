@@ -6,35 +6,13 @@ on:
       - 'v*'
 
 jobs:
-  build-windows:
-    name: Build Windows
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Windows executable
-        run: npm run dist-win
-
-      - name: Upload Windows artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-build
-          path: dist/*.exe
-
-  build-linux:
-    name: Build Linux
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -43,13 +21,22 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Build Linux AppImage
-        run: npm run dist-linux
+      - name: Build FNF Ultimate Toolkit
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            echo "Building for Windows..."
+            npm run dist-win
+          else
+            echo "Building for Linux..."
+            npm run dist-linux
+          fi
 
-      - name: Upload Linux artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: linux-build
-          path: dist/*.AppImage
+          name: fnf-build-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.AppImage
