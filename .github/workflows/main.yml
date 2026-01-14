@@ -6,6 +6,7 @@ on:
       - 'v*'
 
 jobs:
+  # ===== Build Windows =====
   build-windows:
     runs-on: windows-latest
     steps:
@@ -23,6 +24,7 @@ jobs:
           name: fnf-toolkit-windows
           path: dist/*.exe
 
+  # ===== Build Linux =====
   build-linux:
     runs-on: ubuntu-latest
     steps:
