@@ -19,7 +19,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install  # 🔹 trocado de 'npm ci' para 'npm install'
+        run: npm install  # ✅ Usar 'install' no lugar de 'ci'
 
       - name: Build Windows exe
         run: npm run dist-win
