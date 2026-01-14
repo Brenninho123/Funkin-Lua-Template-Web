@@ -3,249 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FNF Script Generator Ultimate</title>
+<title>Funkin' Lua Template</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
-body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#fff;min-height:100vh}
-header{padding:20px;background:rgba(0,0,0,.5);text-align:center}
-header h1{color:#00eaff;font-size:2.2rem}
-main{max-width:1400px;margin:auto;padding:25px}
-section{background:rgba(255,255,255,.08);padding:20px;border-radius:14px;margin-bottom:25px}
-h2{color:#00eaff;margin-bottom:10px}
-label{display:block;margin-top:10px}
-select,input,textarea{width:100%;margin-top:5px;padding:10px;border-radius:8px;border:none;font-family:monospace}
-textarea{min-height:320px}
-button{background:#00eaff;color:#000;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:bold;margin-top:10px}
-button:hover{background:#00b7c2}
-.buttons{display:flex;flex-wrap:wrap;gap:10px}
-footer{text-align:center;padding:15px;background:rgba(0,0,0,.6);font-size:.9rem}
-hr{border:1px solid rgba(255,255,255,.15);margin:15px 0}
+/* ===================== SEU CSS ORIGINAL ===================== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  padding:20px;
+  background:rgba(0,0,0,.4);
+  text-align:center;
+}
+
+header h1{font-size:2.2rem}
+
+nav a{
+  color:#00eaff;
+  text-decoration:none;
+  margin:0 10px;
+  font-weight:bold;
+}
+
+main{
+  padding:40px 20px;
+  max-width:1100px;
+  margin:auto;
+}
+
+section{
+  margin-bottom:40px;
+  background:rgba(255,255,255,.08);
+  padding:20px;
+  border-radius:12px;
+}
+
+section h2{color:#00eaff;margin-bottom:10px}
+
+button{
+  background:#00eaff;
+  border:none;
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+textarea,select,input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:10px;
+}
+
+footer{
+  text-align:center;
+  padding:15px;
+  background:rgba(0,0,0,.5);
+}
+
+/* ===================== INTRO ADICIONAL (SEU) ===================== */
+#introScreen{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#050d12,#0f2027,#203a43);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  transition:.6s;
+}
+
+#introBox{
+  background:rgba(0,0,0,.6);
+  padding:40px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(0,234,255,.3);
+}
+
+#introBox h1{color:#00eaff}
 </style>
 </head>
 
 <body>
 
+<!-- ===================== INTRO (SEU) ===================== -->
+<div id="introScreen">
+  <div id="introBox">
+    <h1>FNF Script Generator</h1>
+    <p>Psych • Codename • V-Slice<br>Lua • Haxe • HScript</p>
+    <button onclick="enterSite()">Entrar</button>
+  </div>
+</div>
+
 <header>
-  <h1>FNF Script Generator Ultimate</h1>
-  <p>Psych Engine • Codename Engine • V-Slice • Lua • Haxe • HXC • HScript</p>
+<h1>Funkin' Script Modding</h1>
+<nav>
+<a href="#inicio">Início</a>
+<a href="#gerador">Gerador</a>
+<a href="#converter">Converter</a>
+<a href="#extras">Extras</a>
+</nav>
 </header>
 
 <main>
 
-<!-- CONFIG -->
-<section>
-<h2>Configuração</h2>
+<section id="inicio">
+<h2>Bem-vindo</h2>
+<p>Gerador avançado de scripts para Friday Night Funkin'.</p>
+</section>
 
-<label>Linguagem / Conversão</label>
-<select id="lang">
-  <option value="lua">Lua (Psych Engine)</option>
-  <option value="haxe">Haxe (.hx)</option>
-  <option value="hxc">HXC / HScript (Codename / V-Slice)</option>
-  <option value="p2c">Psych → Codename</option>
-  <option value="c2p">Codename → Psych</option>
-  <option value="lua2hx">Lua → Haxe</option>
-  <option value="lua2hxc">Lua → HXC</option>
+<section id="gerador">
+<h2>Gerar Script</h2>
+
+<select id="engine">
+<option>Psych Engine (Lua)</option>
+<option>Codename Engine (HScript)</option>
+<option>V-Slice (Haxe)</option>
 </select>
 
-<label>Tipo de Script</label>
-<select id="tipo">
-  <option value="empty">Script vazio</option>
-  <option value="modchart">Modchart</option>
-  <option value="hud">HUD</option>
-  <option value="event">Evento</option>
-  <option value="camera">Câmera</option>
-  <option value="health">Sistema de Vida</option>
-  <option value="cameraeffects">Efeitos de Câmera</option>
-  <option value="notes">Notas Custom</option>
-  <option value="stage">Stage Script</option>
-  <option value="shader">Shader</option>
-  <option value="state">State</option>
-  <option value="module">Module</option>
-  <option value="hxc_song">HXC Song</option>
-  <option value="hxc_event">HXC Event</option>
-  <option value="hxc_module">HXC Module</option>
+<select id="scriptType">
+<option>Camera Zoom</option>
+<option>HUD Custom</option>
+<option>Note Special</option>
+<option>Health System</option>
+<option>Stage JSON</option>
 </select>
 
-<label>Velocidade / Intensidade</label>
-<input id="vel" value="0.5">
+<button onclick="generate()">Gerar Script</button>
 
-<div class="buttons">
-  <button id="btnGerar">Gerar</button>
-  <button id="btnLimpar">Limpar</button>
-</div>
+<textarea id="output" rows="14"></textarea>
+
+<!-- ===================== ADICIONADO ===================== -->
+<button onclick="copyOut()">Copiar</button>
+<button onclick="downloadOut()">Baixar</button>
+
+<input type="file" id="importFile" accept=".lua,.hx,.json,.hscript">
+<button onclick="importFile()">Importar Script</button>
+
 </section>
 
-<!-- IMPORT -->
-<section>
-<h2>Importar Script</h2>
-
-<input type="file" id="importFile" accept=".lua,.hx,.hxc,.json,.hscript">
-
-<textarea id="importText" placeholder="Cole aqui o script para importar..."></textarea>
-
-<div class="buttons">
-  <button id="btnImportar">Importar para Editor</button>
-</div>
+<section id="converter">
+<h2>Converter Scripts</h2>
+<select id="convertType">
+<option>Psych → Codename</option>
+<option>Codename → Psych</option>
+</select>
+<textarea id="inputScript" rows="8" placeholder="Cole o script aqui"></textarea>
+<button onclick="convert()">Converter</button>
+<textarea id="converted" rows="10"></textarea>
 </section>
 
-<!-- OUTPUT -->
-<section>
-<h2>Editor / Saída</h2>
-<textarea id="saida"></textarea>
-
-<div class="buttons">
-  <button id="btnCopiar">Copiar</button>
-  <button id="btnBaixar">Baixar</button>
-</div>
-</section>
-
-<!-- STAGE -->
-<section>
-<h2>Stage JSON (Psych / Codename)</h2>
-
-<input id="stageImg" value="stage/bg">
-<input id="stageX" value="-600">
-<input id="stageY" value="-200">
-<input id="stageZoom" value="0.9">
-
-<label>Callback (opcional)</label>
-<input id="stageCallback" placeholder="onCreatePost">
-
-<button id="btnStage">Gerar Stage JSON</button>
+<section id="extras">
+<h2>Extras (Codename / HScript)</h2>
+<p>Compatível conceitualmente com:</p>
+<ul>
+<li>CodenameEngine</li>
+<li>hscript-improved</li>
+<li>hscript-rewrite</li>
+</ul>
 </section>
 
 </main>
 
-<footer>© 2026 • FNF Script Generator Ultimate</footer>
+<footer>© 2026 - HTML Puro</footer>
 
 <script>
-/* ===========================
-   ELEMENTOS
-=========================== */
-const langEl = document.getElementById('lang');
-const tipoEl = document.getElementById('tipo');
-const velEl  = document.getElementById('vel');
-const saida  = document.getElementById('saida');
-const importText = document.getElementById('importText');
-
-const stageImg = document.getElementById('stageImg');
-const stageX = document.getElementById('stageX');
-const stageY = document.getElementById('stageY');
-const stageZoom = document.getElementById('stageZoom');
-const stageCallback = document.getElementById('stageCallback');
-
-/* ===========================
-   BOTÕES (BUG CORRIGIDO)
-=========================== */
-document.getElementById('btnGerar').addEventListener('click', gerar);
-document.getElementById('btnLimpar').addEventListener('click', ()=>saida.value='');
-document.getElementById('btnCopiar').addEventListener('click', ()=>{
-  saida.select();
-  document.execCommand('copy');
-});
-document.getElementById('btnBaixar').addEventListener('click', baixar);
-document.getElementById('btnStage').addEventListener('click', gerarStageJSON);
-document.getElementById('btnImportar').addEventListener('click', ()=>{
-  if(importText.value.trim()) saida.value = importText.value;
-});
-document.getElementById('importFile').addEventListener('change', importarArquivo);
-
-/* ===========================
-   GERADOR PRINCIPAL
-=========================== */
-function gerar(){
-  let out = "";
-  const l = langEl.value;
-  const t = tipoEl.value;
-  const v = velEl.value || 0.5;
-
-  /* ===== LUA ===== */
-  if(l === "lua"){
-    out += "-- Lua Script (Psych / Codename)\n\n";
-
-    if(t === "modchart")
-      out += `function onBeatHit()\n cameraShake('camGame',0.02,${v})\nend`;
-
-    if(t === "hud")
-      out += `function onCreatePost()\n setTextSize('scoreTxt',20)\nend`;
-
-    if(t === "notes")
-      out += `function opponentNoteHit()\n setProperty('health',getProperty('health')-0.02)\nend`;
-
-    if(t === "camera")
-      out += `function onUpdate()\n setProperty('camGame.zoom',getProperty('camGame.zoom')+${v}*0.001)\nend`;
-
-    if(t === "event")
-      out += `function onEvent(n,v1,v2)\n if n=='Flash' then cameraFlash('camGame','FFFFFF',1) end\nend`;
-  }
-
-  /* ===== HAXE ===== */
-  if(l === "haxe"){
-    out += `import flixel.FlxG;\nclass Script{\n public function new(){}\n public function onBeatHit(b:Int){ if(b%4==0) FlxG.camera.zoom+=${v}; }\n}`;
-  }
-
-  /* ===== HXC / HSCRIPT ===== */
-  if(l === "hxc"){
-    out += `class MyModule extends Module{\n override function onCreate(){ trace("Loaded HXC"); }\n override function onBeatHit(){ Camera.zoom+=${v}; }\n}`;
-  }
-
-  /* ===== CONVERSÕES ===== */
-  if(l === "p2c")
-    out += `-- Psych → Codename\nfunction onBeatHit()\n Camera.shake(${v})\nend`;
-
-  if(l === "c2p")
-    out += `-- Codename → Psych\nfunction onBeatHit()\n cameraShake('camGame',${v},0.2)\nend`;
-
-  if(l === "lua2hx")
-    out += `public function onBeatHit(b:Int){ if(b%4==0) FlxG.camera.zoom+=0.1; }`;
-
-  if(l === "lua2hxc")
-    out += `override function onBeatHit(){ trace("Beat"); }`;
-
-  /* Fallback (BUG FIX) */
-  if(!out.trim()) out = "-- Script gerado com sucesso\n";
-
-  saida.value = out;
+/* ===================== INTRO (SEU) ===================== */
+function enterSite(){
+  document.getElementById('introScreen').style.opacity=0;
+  setTimeout(()=>document.getElementById('introScreen').style.display='none',600);
 }
 
-/* ===========================
-   STAGE JSON
-=========================== */
-function gerarStageJSON(){
-  const obj={
-    defaultZoom:+stageZoom.value,
-    sprites:[
-      { image:stageImg.value, x:+stageX.value, y:+stageY.value }
-    ]
-  };
-  if(stageCallback.value) obj.callback = stageCallback.value;
-  saida.value = JSON.stringify(obj,null,2);
+/* ===================== GERADOR (CORRIGIDO + EXPANDIDO) ===================== */
+function generate(){
+  const engine=document.getElementById('engine').value;
+  const type=document.getElementById('scriptType').value;
+  let code="";
+
+  if(engine.includes("Psych")){
+    if(type==="Camera Zoom"){
+      code=`function onBeatHit()
+ if curBeat % 4 == 0 then
+  cameraShake('camGame',0.02,0.2)
+ end
+end`;
+    }
+    if(type==="HUD Custom"){
+      code=`function onCreatePost()
+ setTextSize('scoreTxt',22)
+ setTextColor('scoreTxt','00EAFF')
+end`;
+    }
+    if(type==="Note Special"){
+      code=`function opponentNoteHit()
+ setProperty('health',getProperty('health')-0.02)
+end`;
+    }
+    if(type==="Health System"){
+      code=`function onUpdate()
+ if getProperty('health') < 0.4 then
+  setProperty('health',0.4)
+ end
+end`;
+    }
+    if(type==="Stage JSON"){
+      code=`{
+ "defaultZoom":0.9,
+ "boyfriend":[770,450],
+ "girlfriend":[400,130],
+ "opponent":[100,450]
+}`;
+    }
+  }
+
+  if(engine.includes("Codename")){
+    code=`// Codename Engine (HScript)
+function onBeatHit(beat){
+ if(beat % 4 == 0){
+  Camera.shake(0.02);
+ }
+}`;
+  }
+
+  if(engine.includes("V-Slice")){
+    code=`class StageExample extends Stage {
+ override function create() {
+  camera.zoom = 0.9;
+ }
+}`;
+  }
+
+  document.getElementById('output').value=code;
 }
 
-/* ===========================
-   DOWNLOAD
-=========================== */
-function baixar(){
+/* ===================== CONVERTER MELHORADO ===================== */
+function convert(){
+  const t=document.getElementById('convertType').value;
+  let txt=document.getElementById('inputScript').value;
+
+  if(!txt.trim()){
+    alert("Cole um script primeiro");
+    return;
+  }
+
+  if(t.includes("Psych")){
+    txt="// Converted Psych → Codename\n"+txt
+      .replace("cameraShake","Camera.shake");
+  }else{
+    txt="-- Converted Codename → Psych\n"+txt
+      .replace("Camera.shake","cameraShake");
+  }
+
+  document.getElementById('converted').value=txt;
+}
+
+/* ===================== ADICIONADO: UTILIDADES ===================== */
+function copyOut(){
+  const o=document.getElementById('output');
+  o.select();
+  document.execCommand("copy");
+}
+
+function downloadOut(){
+  const t=document.getElementById('output').value;
   const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([saida.value],{type:'text/plain'}));
-  a.download="fnf_script."+(
-    saida.value.includes("class")?"hx":
-    saida.value.includes("Module")?"hxc":
-    saida.value.trim().startsWith("{")?"json":"lua"
-  );
+  a.href=URL.createObjectURL(new Blob([t]));
+  a.download="fnf_script.txt";
   a.click();
 }
 
-/* ===========================
-   IMPORTAR
-=========================== */
-function importarArquivo(e){
-  const file=e.target.files[0];
-  if(!file) return;
+function importFile(){
+  const f=document.getElementById('importFile').files[0];
+  if(!f) return;
   const r=new FileReader();
-  r.onload=()=>saida.value=r.result;
-  r.readAsText(file);
+  r.onload=()=>document.getElementById('output').value=r.result;
+  r.readAsText(f);
 }
 </script>
 
